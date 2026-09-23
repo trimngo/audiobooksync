@@ -1,0 +1,29 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+*.tmp
+tmp/
+
+# Test and tool caches
+.cache/
+.coverage
+.pytest_cache/
+
+# Build artifacts and dependencies
+build/
+dist/
+node_modules/
