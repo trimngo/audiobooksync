@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f3efe7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="LeseTakt" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Caslon+Text:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>LeseTakt — Read and listen in sync</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="LeseTakt home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+        <span>LeseTakt</span>
+      </a>
+      <div class="top-actions">
+        <button class="icon-button" id="searchButton" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg></button>
+        <button class="icon-button" id="settingsButton" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"></path></svg></button>
+        <button class="add-book" id="addBookButton"><span>＋</span> Add book</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="book-heading">
+          <button class="cover-small" id="changePdf" aria-label="Choose a PDF"><span>Deutsch<br><em>im Alltag</em></span></button>
+          <div><span class="eyebrow">Currently reading</span><h1 id="bookTitle">Deutsch im Alltag</h1><p>A bilingual reader</p></div>
+        </div>
+
+        <section class="audio-section">
+          <div class="section-title"><span>AUDIO LESSONS</span><button id="importAudioButton">＋ Import folder</button></div>
+          <input id="audioFiles" type="file" accept="audio/*,.mp3,.m4a,.wav,.vtt,.srt" webkitdirectory directory multiple hidden />
+          <div class="sync-tools">
+            <button id="autoSyncButton"><span>✦</span> Auto-sync book</button>
+            <small id="syncStatus">Import a PDF and audio folder to begin</small>
+          </div>
+          <div class="lesson-list" id="lessonList">
+            <button class="lesson active" data-track="0"><span class="lesson-play">▶</span><span><b>01 · Im Café</b><small>08:42 · 3 passages</small></span><i>⋮</i></button>
+            <button class="lesson" data-track="1"><span class="lesson-number">02</span><span><b>Unterwegs</b><small>12:18 · 4 passages</small></span><i>⋮</i></button>
+            <button class="lesson" data-track="2"><span class="lesson-number">03</span><span><b>Auf dem Markt</b><small>09:05 · 2 passages</small></span><i>⋮</i></button>
+            <button class="lesson" data-track="3"><span class="lesson-number">04</span><span><b>Neue Nachbarn</b><small>11:34 · 5 passages</small></span><i>⋮</i></button>
+          </div>
+        </section>
+
+        <section class="passage-section">
+          <div class="section-title"><span>LINKED PASSAGES</span><button id="newLinkButton">＋ New link</button></div>
+          <div class="passage-list" id="passageList">
+            <button class="passage active" data-page="12" data-time="0"><span><b>At the café</b><small>Pages 12–13</small></span><time>00:00</time></button>
+            <button class="passage" data-page="26" data-time="142"><span><b>Ordering politely</b><small>Pages 26–27</small></span><time>02:22</time></button>
+            <button class="passage" data-page="41" data-time="304"><span><b>Paying the bill</b><small>Page 41</small></span><time>05:04</time></button>
+          </div>
+          <p class="sync-hint"><span>↗</span> Passages can jump anywhere in the book.</p>
+        </section>
+      </aside>
+
+      <section class="reader">
+        <div class="reader-toolbar">
+          <button class="mobile-library" id="mobileLibrary">☰</button>
+          <div class="page-nav"><button id="prevPage" aria-label="Previous page">‹</button><span>Page <input id="pageNumber" value="12" inputmode="numeric" aria-label="Page number" /> of <b id="totalPages">96</b></span><button id="nextPage" aria-label="Next page">›</button></div>
+          <div class="language-switch" aria-label="Reading language"><button class="active" data-language="de">DE</button><button data-language="en">EN</button></div>
+          <button class="tool-button" id="zoomOut" aria-label="Zoom out">−</button><span class="zoom-value">100%</span><button class="tool-button" id="zoomIn" aria-label="Zoom in">＋</button>
+          <div class="fit-switch" aria-label="PDF page sizing"><button class="active" data-fit="page">Whole page</button><button data-fit="width">Fit width</button></div>
+        </div>
+
+        <div class="document-stage" id="documentStage">
+          <div id="pdfViewer" aria-label="PDF document" hidden>
+            <canvas id="pdfCanvas"></canvas>
+            <div id="textLayer" class="text-layer"></div>
+            <div class="page-loading" id="pageLoading">Rendering page…</div>
+          </div>
+          <article class="sample-page" id="samplePage">
+            <div class="running-head"><span>KAPITEL 1</span><span>12</span></div>
+            <div class="chapter-number">01</div>
+            <p class="kicker" data-de="ALLTAGSGESPRÄCHE" data-en="EVERYDAY CONVERSATIONS">ALLTAGSGESPRÄCHE</p>
+            <h2 data-de="Ein Morgen<br>im Café" data-en="A morning<br>at the café">Ein Morgen<br>im Café</h2>
+            <p class="intro" data-de="Ein ganz normaler Dienstag beginnt mit Kaffee, einem Croissant – und einer kleinen Überraschung." data-en="A perfectly ordinary Tuesday begins with coffee, a croissant — and a small surprise.">Ein ganz normaler Dienstag beginnt mit Kaffee, einem Croissant – und einer kleinen Überraschung.</p>
+            <div class="rule"></div>
+            <div class="dialogue-block">
+              <p class="scene" data-de="Mara betritt ein kleines Café in Berlin-Kreuzberg. Es ist kurz nach acht." data-en="Mara enters a small café in Berlin-Kreuzberg. It is just after eight.">Mara betritt ein kleines Café in Berlin-Kreuzberg. Es ist kurz nach acht.</p>
+              <div class="dialogue"><b>BARISTA</b><p data-de="Guten Morgen! Was darf es für Sie sein?" data-en="Good morning! What can I get you?">Guten Morgen! Was darf es für Sie sein?</p></div>
+              <div class="dialogue"><b>MARA</b><p data-de="Ich hätte gern einen Cappuccino und ein Croissant, bitte." data-en="I'd like a cappuccino and a croissant, please.">Ich hätte gern einen Cappuccino und ein Croissant, bitte.</p></div>
+              <div class="dialogue"><b>BARISTA</b><p data-de="Sehr gern. Zum Hiertrinken oder zum Mitnehmen?" data-en="Of course. To have here or to take away?">Sehr gern. Zum Hiertrinken oder zum Mitnehmen?</p></div>
+            </div>
+            <aside class="note"><span>SPRACHTIPP</span><p data-de="„Ich hätte gern …“ ist eine höfliche und natürliche Art, etwas zu bestellen." data-en="“Ich hätte gern …” is a polite and natural way to order something.">„Ich hätte gern …“ ist eine höfliche und natürliche Art, etwas zu bestellen.</p></aside>
+            <div class="current-marker"><span></span><b>PLAYING NOW · 00:34</b></div>
+          </article>
+          <button class="floating-link" id="floatingLink">⌁ <span>Link this page</span></button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="player">
+      <div class="now-playing"><div class="mini-art">D<span>A</span></div><div><span>LESSON 01</span><b id="trackTitle">Im Café</b></div></div>
+      <div class="transport">
+        <div class="controls"><button id="back15" aria-label="Back 15 seconds"><span>↶</span><small>15</small></button><button id="previousTrack" aria-label="Previous track">▮◀</button><button class="play-main" id="playButton" aria-label="Play">▶</button><button id="nextTrack" aria-label="Next track">▶▮</button><button id="forward15" aria-label="Forward 15 seconds"><span>↷</span><small>15</small></button></div>
+        <div class="scrubber"><time id="currentTime">00:34</time><input id="progress" type="range" min="0" max="522" value="34" aria-label="Audio progress" /><time id="duration">08:42</time></div>
+      </div>
+      <div class="player-actions"><button id="speedButton">1×</button><button class="volume-button" aria-label="Volume">◖)))</button><button id="queueButton" aria-label="Audio queue">☷</button></div>
+      <audio id="audioPlayer"></audio>
+    </footer>
+
+    <div class="modal-backdrop" id="modalBackdrop" hidden>
+      <form class="modal" id="linkForm">
+        <div class="modal-title"><div><span class="eyebrow">AUDIO → PDF</span><h2>Create a passage link</h2></div><button type="button" id="closeModal" aria-label="Close">×</button></div>
+        <p>Connect the current audio position to any page or range—even if the next passage is elsewhere in the book.</p>
+        <label>Passage name<input id="linkName" required placeholder="e.g. Ordering politely" /></label>
+        <div class="form-row"><label>Starts at<input id="linkTime" required value="00:34" pattern="[0-9]{1,2}:[0-9]{2}" /></label><label>PDF page<input id="linkPage" required value="12" type="number" min="1" /></label><label>Ends on<input id="linkEndPage" required value="13" type="number" min="1" /></label></div>
+        <div class="modal-actions"><button type="button" class="secondary" id="cancelModal">Cancel</button><button class="primary" type="submit">Create link</button></div>
+      </form>
+    </div>
+
+    <input id="pdfFile" type="file" accept="application/pdf,.pdf" hidden />
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

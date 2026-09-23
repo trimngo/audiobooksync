@@ -1,0 +1,10 @@
+{
+  "name": "LeseTakt — Bilingual audiobook reader",
+  "short_name": "LeseTakt",
+  "description": "Read bilingual PDF books and keep their audiobook lessons in sync.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3efe7",
+  "theme_color": "#173f3a",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
