@@ -1,0 +1,12 @@
+{
+  "name": "Audiobook Sync",
+  "short_name": "BookSync",
+  "description": "Listen, read, and keep every page in sync.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f0e9",
+  "theme_color": "#112b29",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

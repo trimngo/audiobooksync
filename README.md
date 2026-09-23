@@ -1,23 +1,35 @@
 # Audiobook Sync
 
-Audiobook Sync is a new project for keeping audiobook files and listening
-progress consistent across devices.
+An installable, mobile-first web player that keeps an audiobook and its PDF
+companion in one reading view. Load local audio and PDF files, jump between
+chapters, add timestamped sync points, and continue from saved progress.
 
-## Project status
+## Run locally
 
-The repository is initialized and ready for development. The application
-architecture, supported audiobook sources, and synchronization protocol will
-be documented as they are implemented.
+The app has no build step or runtime dependencies. Serve the repository over
+HTTP so the service worker and local file APIs work correctly:
 
-## Getting started
+```sh
+python3 -m http.server 4173
+```
 
-1. Clone the repository.
-2. Create a feature branch for your change.
-3. Add setup and test commands here when the first application component is
-   introduced.
+Then open <http://localhost:4173>. On iOS, use **Share → Add to Home Screen**
+to install it as a standalone web app.
 
-## Contributing
+## Features
 
-Keep generated files, local configuration, credentials, and editor metadata
-out of version control. Update this README whenever a change introduces new
-setup steps or developer commands.
+- Responsive listening and reading workspace designed for iPhone and iPad
+- Local audiobook and PDF selection—files never leave the device
+- Audio playback controls, scrubbing, playback speed, and skip controls
+- Timestamped PDF sync points, bookmarks, and persistent listening progress
+- Offline-ready application shell with a web app manifest
+
+## Development
+
+Run the lightweight validation suite with:
+
+```sh
+npm test
+```
+
+No dependency installation is required.
