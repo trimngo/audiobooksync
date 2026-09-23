@@ -21,3 +21,9 @@ test('service worker caches the application shell', () => {
   const worker = fs.readFileSync('service-worker.js', 'utf8');
   for (const asset of ['index.html', 'styles.css', 'app.js', 'manifest.webmanifest']) assert.match(worker, new RegExp(asset));
 });
+
+test('package scripts do not download browser tooling at runtime', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert.equal(packageJson.scripts['visual-check'], 'node scripts/visual-check.js');
+  assert.doesNotMatch(packageJson.scripts['visual-check'], /npx|playwright|puppeteer/);
+});
