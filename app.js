@@ -15,6 +15,7 @@ $('#pdfInput').addEventListener('change', (event) => {
 });
 
 $('#audioInput').addEventListener('change', (event) => {
+  state.tracks.forEach(track => URL.revokeObjectURL(track.url));
   state.tracks=[...event.target.files].filter(f=>f.type.startsWith('audio/')||/\.(mp3|m4a|wav|aac|ogg)$/i.test(f.name)).sort(naturalSort).map((file,i)=>({file,name:file.name.replace(/\.[^.]+$/,''),url:URL.createObjectURL(file),number:i+1}));
   if(!state.tracks.length){toast('No audio files found');return} showReader(); renderTracks(); populateTrackSelect(); selectTrack(0); toast(`${state.tracks.length} audio files added`);
 });
@@ -27,6 +28,7 @@ $('#playBtn').onclick=()=>{if(state.currentTrack<0){toast('Add an audio folder f
 audio.addEventListener('play',()=>$('#playBtn').textContent='Ⅱ'); audio.addEventListener('pause',()=>$('#playBtn').textContent='▶');
 audio.addEventListener('loadedmetadata',()=>{$('#duration').textContent=formatTime(audio.duration);$('#seek').max=Math.floor(audio.duration)});
 audio.addEventListener('timeupdate',()=>{$('#currentTime').textContent=formatTime(audio.currentTime);$('#seek').value=audio.currentTime; syncPassage();});
+audio.addEventListener('ended',()=>{const next=state.currentTrack+1;if(next<state.tracks.length){selectTrack(next,true);toast(`Playing lesson ${next+1}`)}});
 $('#seek').oninput=e=>audio.currentTime=+e.target.value; $('#backBtn').onclick=()=>audio.currentTime=Math.max(0,audio.currentTime-15); $('#forwardBtn').onclick=()=>audio.currentTime=Math.min(audio.duration||0,audio.currentTime+15);
 
 function goToPage(page){state.page=Math.max(1,+page||1);$('#pageNumber').value=state.page;if(state.pdfUrl)$('#pdfFrame').src=`${state.pdfUrl}#page=${state.page}&view=FitH`;}
