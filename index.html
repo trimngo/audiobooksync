@@ -37,8 +37,12 @@
         </div>
 
         <section class="audio-section">
-          <div class="section-title"><span>AUDIO LESSONS</span><button id="importAudioButton">＋ Import</button></div>
-          <input id="audioFiles" type="file" accept="audio/*,.mp3" multiple hidden />
+          <div class="section-title"><span>AUDIO LESSONS</span><button id="importAudioButton">＋ Import folder</button></div>
+          <input id="audioFiles" type="file" accept="audio/*,.mp3,.m4a,.wav,.vtt,.srt" webkitdirectory directory multiple hidden />
+          <div class="sync-tools">
+            <button id="autoSyncButton"><span>✦</span> Auto-sync book</button>
+            <small id="syncStatus">Import a PDF and audio folder to begin</small>
+          </div>
           <div class="lesson-list" id="lessonList">
             <button class="lesson active" data-track="0"><span class="lesson-play">▶</span><span><b>01 · Im Café</b><small>08:42 · 3 passages</small></span><i>⋮</i></button>
             <button class="lesson" data-track="1"><span class="lesson-number">02</span><span><b>Unterwegs</b><small>12:18 · 4 passages</small></span><i>⋮</i></button>
@@ -64,11 +68,15 @@
           <div class="page-nav"><button id="prevPage" aria-label="Previous page">‹</button><span>Page <input id="pageNumber" value="12" inputmode="numeric" aria-label="Page number" /> of <b id="totalPages">96</b></span><button id="nextPage" aria-label="Next page">›</button></div>
           <div class="language-switch" aria-label="Reading language"><button class="active" data-language="de">DE</button><button data-language="en">EN</button></div>
           <button class="tool-button" id="zoomOut" aria-label="Zoom out">−</button><span class="zoom-value">100%</span><button class="tool-button" id="zoomIn" aria-label="Zoom in">＋</button>
-          <button class="tool-button fit" id="fitButton" aria-label="Fit page"><svg viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path></svg></button>
+          <div class="fit-switch" aria-label="PDF page sizing"><button class="active" data-fit="page">Whole page</button><button data-fit="width">Fit width</button></div>
         </div>
 
         <div class="document-stage" id="documentStage">
-          <iframe id="pdfFrame" title="Uploaded PDF"></iframe>
+          <div id="pdfViewer" aria-label="PDF document" hidden>
+            <canvas id="pdfCanvas"></canvas>
+            <div id="textLayer" class="text-layer"></div>
+            <div class="page-loading" id="pageLoading">Rendering page…</div>
+          </div>
           <article class="sample-page" id="samplePage">
             <div class="running-head"><span>KAPITEL 1</span><span>12</span></div>
             <div class="chapter-number">01</div>
@@ -111,6 +119,6 @@
     </div>
 
     <input id="pdfFile" type="file" accept="application/pdf,.pdf" hidden />
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>

@@ -12,8 +12,13 @@ Then open <http://localhost:4173>. The app runs without a backend; imported PDF 
 
 ## Features
 
-- Import a PDF and an entire group of MP3 lesson files.
+- Import a PDF and choose an entire audiobook folder in one step. Nested MP3, M4A,
+  AAC, WAV, and OGG files are discovered and naturally sorted.
 - Switch the reading language between German and English.
 - Build named audio-to-page links, including non-contiguous page ranges.
-- Jump between linked passages from the audio player.
+- Extract selectable PDF text, build a local audio-to-page timeline, follow the
+  current page, and highlight the current word during playback.
+- Use matching `.vtt` or `.srt` sidecar files for precise text alignment. Without
+  sidecars, LeseTakt creates estimated timings from the PDF text and track order.
+- View PDFs as a complete page or fitted to the available width.
 - Install as a PWA and cache the app shell for offline use.
