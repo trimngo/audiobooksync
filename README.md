@@ -23,6 +23,11 @@ export OPENAI_API_KEY="your-key"
 python server.py
 ```
 
+The companion server listens on `127.0.0.1` by default because auto-sync uses
+your billable OpenAI API key and does not provide authentication. To deliberately
+make it available on another interface, set `HOST` explicitly (for example,
+`HOST=0.0.0.0 python server.py`) and only use it on a trusted network.
+
 Then open <http://localhost:4173>. The app runs without a backend; imported PDF and MP3 files remain on the device.
 
 ## Features

@@ -46,12 +46,13 @@ def auto_sync():
     for track, upload in enumerate(audio_files):
         suffix = Path(upload.filename or "audio.mp3").suffix or ".mp3"
         with tempfile.NamedTemporaryFile(suffix=suffix) as temporary:
-            upload.save(temporary.name)
-            with open(temporary.name, "rb") as audio:
-                options = {"model": "whisper-1", "file": audio, "response_format": "verbose_json", "timestamp_granularities": ["segment"]}
-                if language in {"de", "en"}:
-                    options["language"] = language
-                transcript = client.audio.transcriptions.create(**options)
+            upload.save(temporary)
+            temporary.flush()
+            temporary.seek(0)
+            options = {"model": "whisper-1", "file": temporary, "response_format": "verbose_json", "timestamp_granularities": ["segment"]}
+            if language in {"de", "en"}:
+                options["language"] = language
+            transcript = client.audio.transcriptions.create(**options)
         segments = [{"start": item.start, "end": item.end, "text": item.text} for item in transcript.segments]
         for match in align_segments(pages, segments):
             match["track"] = track
@@ -60,4 +61,4 @@ def auto_sync():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "4173")), debug=False)
+    app.run(host=os.environ.get("HOST", "127.0.0.1"), port=int(os.environ.get("PORT", "4173")), debug=False)

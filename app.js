@@ -65,6 +65,12 @@ $('#back15').addEventListener('click', () => { $('#audioPlayer').currentTime = M
 $('#forward15').addEventListener('click', () => { $('#audioPlayer').currentTime = Math.min(+$('#progress').max, ($('#audioPlayer').currentTime || +$('#progress').value) + 15); });
 $('#progress').addEventListener('input', (event) => { $('#currentTime').textContent = formatTime(event.target.value); if ($('#audioPlayer').src) $('#audioPlayer').currentTime = event.target.value; });
 $('#audioPlayer').addEventListener('timeupdate', (event) => { $('#progress').value = event.target.currentTime; $('#currentTime').textContent = formatTime(event.target.currentTime); });
+$('#audioPlayer').addEventListener('loadedmetadata', (event) => {
+  const duration = Number.isFinite(event.target.duration) ? event.target.duration : 0;
+  tracks[state.track].duration = duration;
+  $('#progress').max = duration;
+  $('#duration').textContent = formatTime(duration);
+});
 $('#audioPlayer').addEventListener('ended', () => setTrack(state.track + 1));
 
 $$('.lesson').forEach((lesson) => lesson.addEventListener('click', () => setTrack(+lesson.dataset.track)));
@@ -128,7 +134,12 @@ $('#audioFiles').addEventListener('change', (event) => {
   $('#lessonList').innerHTML = '';
   tracks.forEach((track, index) => {
     const button = document.createElement('button'); button.className = `lesson${index === 0 ? ' active' : ''}`; button.dataset.track = index;
-    button.innerHTML = `<span class="${index ? 'lesson-number' : 'lesson-play'}">${index ? String(index + 1).padStart(2, '0') : '▶'}</span><span><b>${track.name}</b><small>MP3 lesson</small></span><i>⋮</i>`;
+    const number = document.createElement('span'); number.className = index ? 'lesson-number' : 'lesson-play'; number.textContent = index ? String(index + 1).padStart(2, '0') : '▶';
+    const description = document.createElement('span');
+    const name = document.createElement('b'); name.textContent = track.name;
+    const kind = document.createElement('small'); kind.textContent = 'MP3 lesson';
+    const menu = document.createElement('i'); menu.textContent = '⋮';
+    description.append(name, kind); button.append(number, description, menu);
     button.addEventListener('click', () => setTrack(index)); $('#lessonList').appendChild(button);
   });
   setTrack(0);
@@ -182,6 +193,11 @@ $('#startSync').addEventListener('click', async () => {
     const response = await fetch('/api/auto-sync', { method: 'POST', body: data });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || 'Auto-sync failed');
+    if (Number.isInteger(result.page_count) && result.page_count > 0) {
+      state.totalPages = result.page_count;
+      $('#totalPages').textContent = result.page_count;
+      setPage(state.page);
+    }
     $('#passageList').innerHTML = '';
     result.passages.forEach(addAlignedPassage);
     $('#syncStatusText').textContent = `Created ${result.passages.length} timed page links.`;
