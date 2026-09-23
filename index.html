@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4f0e7" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Zwischenzeilen — Read & Listen</title>
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-button mobile-only" id="menuBtn" aria-label="Open library">☰</button>
+    <a class="brand" href="#" aria-label="Zwischenzeilen home"><span class="brand-mark">Z</span><span>Zwischenzeilen</span></a>
+    <nav class="desktop-nav" aria-label="Main navigation"><button class="active">Reader</button><button id="libraryBtn">Library</button></nav>
+    <div class="header-actions">
+      <button class="language" id="languageBtn" aria-label="Switch interface language"><span>DE</span><i></i><span class="muted">EN</span></button>
+      <button class="icon-button" id="themeBtn" aria-label="Toggle theme">☼</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="empty-state" id="emptyState">
+      <div class="eyebrow">YOUR BILINGUAL READING COMPANION</div>
+      <h1>Read the page.<br><em>Hear the story.</em></h1>
+      <p>Bring your PDF and audiobook together. Create precise links between any passage and the moment it is spoken.</p>
+      <div class="import-grid">
+        <label class="import-card" for="pdfInput">
+          <span class="card-icon pdf-icon">▤</span><span class="step">01</span>
+          <strong>Choose your book</strong><small>Import a PDF in German, English, or both.</small><span class="card-action">Select PDF <b>→</b></span>
+        </label>
+        <label class="import-card" for="audioInput">
+          <span class="card-icon audio-icon">♫</span><span class="step">02</span>
+          <strong>Add the audio</strong><small>Select an audiobook folder. Every MP3 is sorted for you.</small><span class="card-action">Select folder <b>→</b></span>
+        </label>
+      </div>
+      <input id="pdfInput" type="file" accept="application/pdf" hidden />
+      <input id="audioInput" type="file" accept="audio/*,.mp3,.m4a,.wav" webkitdirectory directory multiple hidden />
+      <button class="demo-link" id="demoBtn">or explore with a sample lesson</button>
+    </section>
+
+    <section class="reader" id="reader" hidden>
+      <aside class="chapters" id="chaptersPanel">
+        <div class="side-heading"><div><span>CONTENTS</span><h2 id="bookTitle">Your audiobook</h2></div><button class="icon-button mobile-only" id="closeMenu">×</button></div>
+        <div class="track-list" id="trackList"></div>
+        <label class="add-files" for="audioInput">＋ Add audio folder</label>
+      </aside>
+      <section class="document-pane">
+        <div class="document-tools">
+          <div><span class="status-dot"></span><span id="documentName">No PDF selected</span></div>
+          <div class="page-controls"><button id="prevPage" aria-label="Previous page">‹</button><span>Page <input id="pageNumber" type="number" min="1" value="1" /> </span><button id="nextPage" aria-label="Next page">›</button></div>
+          <label class="replace-file" for="pdfInput">Replace PDF</label>
+        </div>
+        <div class="pdf-stage" id="pdfStage">
+          <iframe id="pdfFrame" title="PDF reader"></iframe>
+          <div class="pdf-placeholder" id="pdfPlaceholder"><span>▤</span><h2>Add the PDF edition</h2><p>Your document stays on this device.</p><label for="pdfInput">Choose PDF</label></div>
+        </div>
+      </section>
+      <aside class="links-panel">
+        <div class="side-heading"><div><span>PASSAGE LINKS</span><h2>Reading map</h2></div><button class="primary-small" id="addLinkBtn">＋ Link</button></div>
+        <p class="panel-help">Jump across non-contiguous pages as the audio plays.</p>
+        <div id="linksList" class="links-list"></div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="player" id="player" hidden>
+    <div class="now-playing"><div class="cover">Z</div><div><span>NOW PLAYING</span><strong id="nowTitle">Select a lesson</strong><small id="nowFile">—</small></div></div>
+    <div class="transport">
+      <div class="buttons"><button id="backBtn">−15</button><button class="play" id="playBtn" aria-label="Play">▶</button><button id="forwardBtn">+15</button></div>
+      <div class="timeline"><span id="currentTime">0:00</span><input id="seek" type="range" min="0" max="100" value="0" /><span id="duration">0:00</span></div>
+    </div>
+    <button class="sync-button" id="syncBtn"><span>⌁</span><b>Follow audio</b><small>ON</small></button>
+    <audio id="audio"></audio>
+  </footer>
+
+  <dialog id="linkDialog">
+    <form method="dialog" id="linkForm">
+      <div class="dialog-title"><div><span>CREATE PASSAGE LINK</span><h2>Connect audio to pages</h2></div><button value="cancel" aria-label="Close">×</button></div>
+      <p>When playback reaches this moment, the reader will jump to the selected page. Add as many links as you need.</p>
+      <label>Label<input id="linkLabel" placeholder="e.g. Exercise 4 · English" required /></label>
+      <div class="form-row"><label>Page<input id="linkPage" type="number" min="1" value="1" required /></label><label>Audio time<input id="linkTime" placeholder="mm:ss" value="00:00" required /></label></div>
+      <label>Audio file<select id="linkTrack" required></select></label>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default" id="saveLink" class="primary">Save link</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
