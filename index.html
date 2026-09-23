@@ -88,9 +88,14 @@
           <audio id="audio" preload="metadata"></audio>
           <label class="audio-upload" for="audioInput">
             <svg aria-hidden="true"><use href="#icon-headphones"/></svg>
-            <span><strong>Load your audiobook</strong><small>MP3, M4A, or WAV stays on this device</small></span>
-            <input id="audioInput" type="file" accept="audio/*" hidden>
+            <span><strong>Choose audiobook folder</strong><small>Select a folder of MP3, M4A, or WAV files</small></span>
+            <input id="audioInput" type="file" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" webkitdirectory directory multiple hidden>
           </label>
+          <div class="playlist-summary" id="playlistSummary" hidden>
+            <span><strong id="trackPosition">Track 1 of 1</strong><small id="folderName">Audiobook</small></span>
+            <button class="text-button" id="showTracks" aria-expanded="false" aria-controls="trackList">Tracks</button>
+          </div>
+          <ol class="track-list" id="trackList" hidden aria-label="Audiobook tracks"></ol>
           <div class="timeline">
             <input id="seek" type="range" min="0" max="100" value="27" aria-label="Audio position">
             <div><span id="elapsed">18:24</span><span id="duration">1:08:12</span></div>

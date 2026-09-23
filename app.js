@@ -8,6 +8,8 @@ const currentPage = document.querySelector('#currentPage');
 const syncPage = document.querySelector('#syncPage');
 let page = Number(localStorage.getItem('reader-page')) || 42;
 let previewTime = Number(localStorage.getItem('audio-progress')) || 1104;
+let tracks = [];
+let currentTrack = 0;
 
 const formatTime = (value) => {
   if (!Number.isFinite(value)) return '0:00';
@@ -56,13 +58,56 @@ seek.addEventListener('input', () => {
 document.querySelectorAll('[data-skip]').forEach((button) => button.addEventListener('click', () => {
   if (audio.src) audio.currentTime = Math.max(0, Math.min(audio.duration || Infinity, audio.currentTime + Number(button.dataset.skip)));
 }));
+const naturalSort = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+const loadTrack = (index, autoplay = false) => {
+  if (!tracks[index]) return;
+  if (audio.src.startsWith('blob:')) URL.revokeObjectURL(audio.src);
+  currentTrack = index;
+  audio.src = URL.createObjectURL(tracks[index]);
+  document.querySelector('#chapterTitle').textContent = tracks[index].name.replace(/\.[^.]+$/, '');
+  document.querySelector('#trackPosition').textContent = `Track ${index + 1} of ${tracks.length}`;
+  document.querySelectorAll('.track-list button').forEach((button, buttonIndex) => {
+    button.classList.toggle('active', buttonIndex === index);
+    button.setAttribute('aria-current', buttonIndex === index ? 'true' : 'false');
+  });
+  localStorage.setItem('audio-track', String(index));
+  previewTime = 0;
+  if (autoplay) audio.play();
+};
+
 document.querySelector('#audioInput').addEventListener('change', (event) => {
-  const [file] = event.target.files;
-  if (!file) return;
-  audio.src = URL.createObjectURL(file);
-  document.querySelector('.audio-upload strong').textContent = file.name.replace(/\.[^.]+$/, '');
-  document.querySelector('.audio-upload small').textContent = 'Ready to play';
-  showToast('Audiobook loaded');
+  tracks = [...event.target.files]
+    .filter((file) => file.type.startsWith('audio/') || /\.(mp3|m4a|wav|aac|ogg)$/i.test(file.name))
+    .sort((a, b) => naturalSort.compare(a.webkitRelativePath || a.name, b.webkitRelativePath || b.name));
+  if (!tracks.length) {
+    showToast('No audio files found in that folder');
+    return;
+  }
+  const list = document.querySelector('#trackList');
+  list.replaceChildren(...tracks.map((track, index) => {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.innerHTML = `<span>${index + 1}</span><strong>${track.name.replace(/\.[^.]+$/, '')}</strong>`;
+    button.addEventListener('click', () => loadTrack(index, true));
+    item.append(button);
+    return item;
+  }));
+  const path = tracks[0].webkitRelativePath;
+  document.querySelector('#folderName').textContent = path ? path.split('/')[0] : 'Selected audiobook';
+  document.querySelector('#playlistSummary').hidden = false;
+  document.querySelector('.audio-upload strong').textContent = `${tracks.length} audio ${tracks.length === 1 ? 'file' : 'files'} loaded`;
+  document.querySelector('.audio-upload small').textContent = 'Tap to choose a different folder';
+  loadTrack(Math.min(Number(localStorage.getItem('audio-track')) || 0, tracks.length - 1));
+  showToast(`${tracks.length} tracks loaded in filename order`);
+});
+audio.addEventListener('ended', () => {
+  if (currentTrack < tracks.length - 1) loadTrack(currentTrack + 1, true);
+});
+document.querySelector('#showTracks').addEventListener('click', (event) => {
+  const list = document.querySelector('#trackList');
+  list.hidden = !list.hidden;
+  event.currentTarget.setAttribute('aria-expanded', String(!list.hidden));
 });
 
 const speeds = [1, 1.25, 1.5, 1.75, 2, .75];

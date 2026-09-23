@@ -1,4 +1,4 @@
-const CACHE = 'audiobook-sync-v1';
+const CACHE = 'audiobook-sync-v2';
 const SHELL = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', (event) => {

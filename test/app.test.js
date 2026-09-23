@@ -9,6 +9,15 @@ test('application shell includes required mobile and accessible metadata', () =>
   assert.match(html, /aria-label="Audio position"/);
   assert.match(html, /id="pdfInput"/);
   assert.match(html, /id="audioInput"/);
+  assert.match(html, /webkitdirectory/);
+  assert.match(html, /multiple/);
+});
+
+test('folder audiobooks are sorted and advance between tracks', () => {
+  const app = fs.readFileSync('app.js', 'utf8');
+  assert.match(app, /new Intl\.Collator/);
+  assert.match(app, /audio\.addEventListener\('ended'/);
+  assert.match(app, /webkitRelativePath/);
 });
 
 test('web manifest launches in standalone mode', () => {
